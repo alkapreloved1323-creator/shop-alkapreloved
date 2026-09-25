@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -25,4 +25,4 @@ export function SectionHeading({ eyebrow, title, link }: { eyebrow: string; titl
 
 export function Footer() { return <footer className="site-footer"><div className="container footer-grid"><div className="footer-brand"><Link href="/" className="brand-mark"><span className="brand-dot" /><span>alka<span>preloved</span></span></Link><p>Pre-loved pieces,<br />chosen with intention.</p></div><div><p className="footer-label">Explore</p><Link href="/shop">Shop all</Link><Link href="/shop#new">New arrivals</Link><Link href="/shop#categories">Categories</Link></div><div><p className="footer-label">Help</p><Link href="/track-order">Track your order</Link><Link href="/cart">Your bag</Link><Link href="/#contact">Contact us</Link></div><div className="footer-newsletter"><p className="footer-label">The edit, occasionally</p><p>New drops, thoughtful notes, no noise.</p><div className="newsletter-form"><input type="email" placeholder="Your email address" aria-label="Email address" /><button aria-label="Subscribe"><ArrowRight size={17} /></button></div></div></div><div className="container footer-bottom"><span>© 2026 AlkaPreloved</span><span>Made for a slower kind of shopping.</span></div></footer>; }
 
-export type Product = { name: string; slug: string; category: string; price: string; condition: string; size: string; image: string; badge?: string };
+export type Product = { name: string; slug: string; category: string; price: string; priceValue?: number; condition: string; size: string; image: string; badge?: string; createdAt?: string };
