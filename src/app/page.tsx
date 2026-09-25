@@ -1,20 +1,16 @@
-// Homepage — Phase 3 will flesh this out with the full design.
-// Currently a minimal branded placeholder.
+﻿import Image from "next/image";
+import { ArrowDown, ArrowRight, Sparkles } from "lucide-react";
+import { Footer, Navbar, ProductCard, SectionHeading, type Product } from "@/components/storefront";
+
+const products: Product[] = [
+  { name: "Linen Oversized Shirt", slug: "linen-oversized-shirt", category: "Tops", price: "Rp 185.000", condition: "Very good", size: "M", image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=900&q=85", badge: "Just in" },
+  { name: "Everyday Leather Tote", slug: "everyday-leather-tote", category: "Accessories", price: "Rp 320.000", condition: "Good", size: "One size", image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=85" },
+  { name: "Soft Tailored Trousers", slug: "soft-tailored-trousers", category: "Bottoms", price: "Rp 240.000", condition: "Like new", size: "S", image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=85" },
+];
+
+const categories = ["All pieces", "Tops", "Dresses", "Bottoms", "Accessories"];
 
 export default function HomePage() {
-  return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-white">
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-          AlkaPreloved
-        </h1>
-        <p className="text-lg text-gray-500">
-          Curated Preloved Fashion
-        </p>
-        <p className="text-sm text-gray-400">
-          Phase 1 complete — architecture ready.
-        </p>
-      </div>
-    </main>
-  );
+  return <main><Navbar /><section className="hero"><div className="hero-copy"><p className="eyebrow hero-eyebrow">A considered collection of preloved pieces</p><h1>Good things<br /><em>deserve</em> another<br />story.</h1><p className="hero-description">Beautifully lived-in pieces, carefully chosen and ready for their next chapter.</p><div className="hero-actions"><a className="button button-dark" href="/shop">Discover the collection <ArrowRight size={16} /></a><a className="scroll-cue" href="#new"><span>Scroll to explore</span><ArrowDown size={15} /></a></div></div><div className="hero-image"><Image src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=1400&q=90" alt="Curated neutral fashion pieces" fill priority sizes="(max-width: 800px) 100vw, 54vw" /></div><div className="hero-stamp"><span>pre-loved</span><span className="stamp-star">✳</span><span>well chosen</span></div></section><section className="intro-band" id="story"><div className="container intro-grid"><p className="eyebrow">Why alka?</p><p className="intro-statement">We believe the best wardrobes are built slowly — with pieces that feel like <em>you</em>, not everyone else.</p><div className="intro-small"><Sparkles size={18} /><p>Curated with care<br />in Jakarta, Indonesia</p></div></div></section><section className="product-section container" id="new"><SectionHeading eyebrow="The latest edit" title="Newly found, newly loved" link="View all pieces" /><div className="product-grid">{products.map((product) => <ProductCard key={product.slug} product={product} />)}</div></section><section className="category-section container" id="categories"><SectionHeading eyebrow="Find your kind of" title="Something for every day" /><div className="category-grid">{categories.map((category, index) => <a href="/shop" className={`category-card category-${index + 1}`} key={category}><span>{category}</span><ArrowUpRight /></a>)}</div></section><section className="manifesto"><div className="container manifesto-inner"><p className="eyebrow">A slower way to shop</p><h2>Wear it well.<br /><em>Pass it on.</em></h2><a href="/#story" className="button button-light">Our story <ArrowRight size={16} /></a></div></section><Footer /></main>;
 }
+function ArrowUpRight() { return <ArrowRight size={17} className="category-arrow" />; }
