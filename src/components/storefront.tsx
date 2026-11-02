@@ -750,7 +750,7 @@ export function KauppaNavbar() {
             <Link href="/">Beranda</Link>
             <div className="kauppa-nav-dropdown">
               <button type="button" aria-haspopup="true" className="kauppa-nav-dropdown-trigger">
-                Kategori <ChevronDown size={14} />
+                <span>Kategori</span> <ChevronDown size={14} aria-hidden="true" />
               </button>
               <div className="kauppa-nav-dropdown-menu">
                 {["Semua", "Fashion", "Accessories", "Footwear", "Outerwear", "Vintage"].map((category) => (

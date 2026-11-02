@@ -278,10 +278,10 @@
 .kauppa-brand-name { font-size: 18px; font-weight: 700; color: #4F46E5; letter-spacing: -.03em; }
 .kauppa-brand-name span { color: var(--sg-primary); }
 .kauppa-main-nav { display: flex; align-items: center; gap: 22px; flex: 1; }
-.kauppa-main-nav a, .kauppa-nav-dropdown-trigger { font-size: 13px; color: #6366F1; font-weight: 500; transition: color .18s; }
+.kauppa-main-nav a, .kauppa-nav-dropdown-trigger { font-family:var(--font-sans); font-size:13px; line-height:1.5; color: #6366F1; font-weight: 500; transition: color .18s; }
 .kauppa-main-nav a:hover, .kauppa-nav-dropdown-trigger:hover { color: var(--sg-primary); }
 .kauppa-nav-dropdown { position: relative; }
-.kauppa-nav-dropdown-trigger { display:flex; align-items:center; gap:4px; border:0; padding:0; background:transparent; font:inherit; cursor:pointer; }
+.kauppa-nav-dropdown-trigger { display:flex; align-items:center; gap:4px; border:0; padding:0; background:transparent; cursor:pointer; }
 .kauppa-nav-dropdown-menu { position:absolute; top:calc(100% + 16px); left:-14px; min-width:160px; padding:8px; background:var(--color-paper); border:1px solid var(--color-line); border-radius:14px; box-shadow:0 16px 32px rgba(15,23,42,.12); opacity:0; visibility:hidden; transform:translateY(-6px); transition:opacity .18s, transform .18s, visibility .18s; z-index:30; }
 .kauppa-nav-dropdown:hover .kauppa-nav-dropdown-menu, .kauppa-nav-dropdown:focus-within .kauppa-nav-dropdown-menu { opacity:1; visibility:visible; transform:translateY(0); }
 .kauppa-nav-dropdown-menu a { display:block; padding:9px 10px; border-radius:9px; color:var(--color-ink); font-size:12px; }
