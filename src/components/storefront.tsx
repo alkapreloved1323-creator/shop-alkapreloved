@@ -400,8 +400,8 @@ export function ProductCard({
 
   if (theme === "dark") {
     return (
-      <article className="group bg-[#4F46E5]/60 border border-[#4F46E5]/80 hover:border-[#6366F1]/80 rounded-3xl p-3.5 transition-all duration-300 hover:shadow-2xl hover:shadow-black/80 flex flex-col justify-between">
-        <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[#0F172A]">
+      <article className="group bg-[#E8EAFD] border border-[#C7CBFA] hover:border-[#A5B0F5] rounded-3xl p-3.5 transition-all duration-300 hover:shadow-xl hover:shadow-[#6366F1]/15 flex flex-col justify-between">
+        <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[#E2E8F0]">
           <Link href={`/product/${product.slug}`} className="block w-full h-full relative">
             <Image
               src={product.image}
@@ -415,15 +415,15 @@ export function ProductCard({
 
           {/* Badge */}
           {product.badge && (
-            <span className="absolute top-3 left-3 bg-[#0F172A]/75 backdrop-blur-md text-[#E2E8F0] border border-[#FED7AA]/20 text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full pointer-events-none">
+            <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[#0F172A] border border-[#C7CBFA] text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full pointer-events-none">
               {product.badge}
             </span>
           )}
 
           {/* Wishlist toggle */}
           <button
-            className={`absolute top-3 right-3 w-9 h-9 rounded-full bg-[#0F172A]/70 backdrop-blur-md border border-[#EEF2FF]/10 flex items-center justify-center transition-colors cursor-pointer ${
-              liked ? "text-rose-500" : "text-white/80 hover:text-[#F8FAFC]"
+            className={`absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md border border-[#C7CBFA] flex items-center justify-center transition-colors cursor-pointer ${
+              liked ? "text-rose-500" : "text-[#64748B] hover:text-[#6366F1]"
             }`}
             aria-label={`${liked ? "Hapus" : "Tambah"} ${product.name} ke wishlist`}
             onClick={(event) => {
@@ -438,25 +438,25 @@ export function ProductCard({
         {/* Product meta */}
         <div className="pt-4 px-1 flex flex-col gap-1.5 flex-1">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#FED7AA]/90 font-medium tracking-wider uppercase text-[10px]">
+            <span className="text-[#6366F1] font-medium tracking-wider uppercase text-[10px]">
               {product.category}
             </span>
-            <span className="text-[#94A3B8] text-[11px]">
+            <span className="text-[#64748B] text-[11px]">
               {product.condition} • {product.size}
             </span>
           </div>
 
-          <h3 className="font-semibold text-white text-base tracking-tight group-hover:text-[#E2E8F0] transition-colors line-clamp-1">
+          <h3 className="font-semibold text-[#0F172A] text-base tracking-tight group-hover:text-[#6366F1] transition-colors line-clamp-1">
             <Link href={`/product/${product.slug}`}>{product.name}</Link>
           </h3>
 
-          <div className="mt-auto pt-3 flex items-center justify-between border-t border-[#4F46E5]/60">
-            <span className="text-white font-bold text-base tracking-tight">
+          <div className="mt-auto pt-3 flex items-center justify-between border-t border-[#C7CBFA]">
+            <span className="text-[#0F172A] font-bold text-base tracking-tight">
               {product.price}
             </span>
             <Link
               href={`/product/${product.slug}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4F46E5] hover:bg-[#EEF2FF] text-[#E2E8F0] hover:text-[#0F172A] text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#A5B0F5] hover:bg-[#6366F1] text-[#0F172A] hover:text-white text-xs font-medium transition-colors"
             >
               Lihat
               <ArrowRight size={13} />
