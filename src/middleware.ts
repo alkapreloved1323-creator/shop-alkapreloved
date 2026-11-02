@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // ─── Admin Route Protection ──────────────────────────────
-  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
+  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin") && request.nextUrl.pathname !== "/admin/login";
 
   if (isAdminRoute) {
     if (!user) {
