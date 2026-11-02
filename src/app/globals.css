@@ -502,14 +502,16 @@
   .kauppa-footer-top-inner { grid-template-columns: 1fr; gap: 28px; }
   .kauppa-topnav { display: none; }
 }
-@media (max-width: 640px) {
+@media (max-width: 800px) {
   .kauppa-hamburger { display: grid; }
   .kauppa-main-nav { display: none; }
+  .kauppa-admin-btn { display: none; }
+}
+@media (max-width: 640px) {
   .kauppa-product-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .kauppa-product-grid-6 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .kauppa-services-grid { grid-template-columns: 1fr; }
   .kauppa-cat-row { justify-content: flex-start; overflow-x: auto; padding-bottom: 6px; flex-wrap: nowrap; }
-  .kauppa-admin-btn { display: none; }
 }
 /* Mobile layout safeguards across every storefront page. */
 @media (max-width: 640px) {
@@ -520,7 +522,6 @@
   .kauppa-nav-actions { gap: 0; }
   .kauppa-icon-btn { width: 34px; height: 34px; }
   .kauppa-nav-actions .kauppa-admin-btn { display: none; }
-  .kauppa-hamburger { display: grid; }
   .hero { min-height: auto; }
   .hero-copy { padding: 120px 20px 52px; }
   .hero-copy h1 { font-size: clamp(44px, 14vw, 64px); }

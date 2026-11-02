@@ -739,7 +739,7 @@ export function KauppaNavbar() {
       {/* Main navbar */}
       <div className="kauppa-navbar-main">
         <div className="kauppa-container kauppa-navbar-inner">
-          <button className="kauppa-hamburger lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu">
+          <button className="kauppa-hamburger" onClick={() => setOpen(true)} aria-label="Open menu">
             <Menu size={20} />
           </button>
           <Link href="/" className="kauppa-brand">
