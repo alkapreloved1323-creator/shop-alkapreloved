@@ -760,9 +760,9 @@ export function KauppaNavbar() {
                 ))}
               </div>
             </div>
-            <Link href="/#promo">Promo</Link>
-            <Link href="/#story">Tentang</Link>
-            <Link href="/#contact">Kontak</Link>
+            <Link href="/promo">Promo</Link>
+            <Link href="/about">Tentang</Link>
+            <Link href="/contact">Kontak</Link>
             <Link href="/track-order">Lacak Pesanan</Link>
           </nav>
           <div className="kauppa-nav-actions">
@@ -814,9 +814,9 @@ export function KauppaNavbar() {
                   {category}<ArrowRight size={17} />
                 </Link>
               ))}
-              <Link href="/#promo" onClick={() => setOpen(false)}>Promo<ArrowRight size={17} /></Link>
-              <Link href="/#story" onClick={() => setOpen(false)}>Tentang<ArrowRight size={17} /></Link>
-              <Link href="/#contact" onClick={() => setOpen(false)}>Kontak<ArrowRight size={17} /></Link>
+              <Link href="/promo" onClick={() => setOpen(false)}>Promo<ArrowRight size={17} /></Link>
+              <Link href="/about" onClick={() => setOpen(false)}>Tentang<ArrowRight size={17} /></Link>
+              <Link href="/contact" onClick={() => setOpen(false)}>Kontak<ArrowRight size={17} /></Link>
               <Link href="/track-order" onClick={() => setOpen(false)}>Lacak Pesanan<ArrowRight size={17} /></Link>
             </nav>
           </div>
@@ -890,7 +890,7 @@ export function KauppaFooter() {
           <div className="kauppa-footer-links">
             <div>
               <p className="kauppa-footer-label">About us</p>
-              <Link href="/#story">Our Story</Link>
+              <Link href="/about">Our Story</Link>
               <Link href="/shop">Career</Link>
               <Link href="/shop">Partners</Link>
               <Link href="/shop">Location</Link>
@@ -898,7 +898,7 @@ export function KauppaFooter() {
             </div>
             <div>
               <p className="kauppa-footer-label">Supports</p>
-              <Link href="/#contact">Contact Us</Link>
+              <Link href="/contact">Contact Us</Link>
               <Link href="/shop">FAQ</Link>
             </div>
           </div>
