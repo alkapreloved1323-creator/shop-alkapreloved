@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
     ],
     // Optimize images on the fly
     formats: ["image/avif", "image/webp"],
+    qualities: [60, 65, 75],
   },
 
   // Security headers

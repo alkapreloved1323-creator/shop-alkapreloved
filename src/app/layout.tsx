@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { CartProvider } from "@/components/cart-context";
+import { WishlistProvider } from "@/components/wishlist-context";
 import "./globals.css";
 
 const inter = Inter({
@@ -56,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
+        <CartProvider><WishlistProvider>{children}</WishlistProvider></CartProvider>
       </body>
     </html>
   );

@@ -57,6 +57,7 @@ export class MockPaymentService implements PaymentService {
     payload: unknown,
     _signature?: string
   ): Promise<{ orderId: string; status: string }> {
+    void _signature;
     console.log("[MockPaymentService] handleWebhook called:", payload);
 
     // In development, return a mock successful result

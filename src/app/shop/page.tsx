@@ -1,5 +1,5 @@
-﻿import type { Metadata } from "next";
-import { Footer, Navbar, type Product } from "@/components/storefront";
+import type { Metadata } from "next";
+import { Footer, KauppaNavbar, type Product } from "@/components/storefront";
 import { CatalogClient } from "@/components/catalog-client";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -24,4 +24,4 @@ async function getCatalogProducts(): Promise<Product[]> {
   } catch { return demoProducts; }
 }
 
-export default async function ShopPage() { const products = await getCatalogProducts(); return <main><Navbar /><section className="shop-hero"><div className="container"><p className="eyebrow">The collection</p><h1>Pieces with<br /><em>a past.</em></h1><p>Wearable, well-loved, and ready for their next chapter.</p></div></section><section className="container shop-content"><CatalogClient products={products} /></section><Footer /></main>; }
+export default async function ShopPage() { const products = await getCatalogProducts(); return <main><KauppaNavbar /><section className="shop-hero"><div className="container"><p className="eyebrow">The collection</p><h1>Pieces with<br /><em>a past.</em></h1><p>Wearable, well-loved, and ready for their next chapter.</p></div></section><section className="container shop-content"><CatalogClient products={products} /></section><Footer /></main>; }

@@ -1,0 +1,5 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+const schema = z.object({ email: z.string().email() });
+export async function POST(request: NextRequest) { const parsed = schema.safeParse(await request.json()); if (!parsed.success) return NextResponse.json({ error: "Email tidak valid." }, { status: 400 }); const supabase = createSupabaseAdminClient(); const { error } = await supabase.from("newsletter_subscribers").upsert({ email: parsed.data.email, subscribed_at: new Date().toISOString() }, { onConflict: "email" }); if (error) return NextResponse.json({ error: "Newsletter belum dapat diproses." }, { status: 500 }); return NextResponse.json({ message: "Terima kasih, Anda sudah berlangganan." }); }

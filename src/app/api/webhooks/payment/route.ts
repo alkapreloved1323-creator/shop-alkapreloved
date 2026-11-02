@@ -15,15 +15,32 @@
 // ⚠️  Must be idempotent — safe to call multiple times.
 // ============================================================
 
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getPaymentService } from "@/services/payment/payment.service";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
+function verifyWebhook(rawBody: string, request: NextRequest) {
+  const token = process.env.PAYMENT_WEBHOOK_TOKEN;
+  const receivedToken = request.headers.get("x-webhook-token");
+  if (token && receivedToken === token) return true;
+  const secret = process.env.PAYMENT_WEBHOOK_SECRET;
+  const id = request.headers.get("svix-id");
+  const timestamp = request.headers.get("svix-timestamp");
+  const signature = request.headers.get("svix-signature");
+  if (!secret || !id || !timestamp || !signature) return false;
+  const age = Math.abs(Date.now() / 1000 - Number(timestamp));
+  if (!Number.isFinite(age) || age > 300) return false;
+  const expected = createHmac("sha256", Buffer.from(secret.replace(/^whsec_/, ""), "base64")).update(`${id}.${timestamp}.${rawBody}`).digest("base64");
+  return signature.split(" ").some((entry) => { const candidate = entry.split(",")[1]; if (!candidate) return false; const a = Buffer.from(candidate); const b = Buffer.from(expected); return a.length === b.length && timingSafeEqual(a, b); });
+}
+
 export async function POST(request: NextRequest) {
   try {
-    // Read raw body for signature verification
     const rawBody = await request.text();
-    const signature = request.headers.get("x-signature") ?? undefined;
+    if (!verifyWebhook(rawBody, request)) {
+      return NextResponse.json({ error: "Invalid webhook signature" }, { status: 401 });
+    }
 
     let payload: unknown;
     try {
@@ -40,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     let webhookResult: { orderId: string; status: string };
     try {
-      webhookResult = await paymentService.handleWebhook(payload, signature);
+      webhookResult = await paymentService.handleWebhook(payload);
     } catch (err) {
       console.error("[Webhook] Payment signature validation failed:", err);
       return NextResponse.json(
@@ -87,7 +104,7 @@ export async function POST(request: NextRequest) {
 
     // ─── Update order status ──────────────────────────────────
     let newOrderStatus = order.order_status;
-    let newPaymentStatus = status;
+    const newPaymentStatus = status;
 
     if (status === "paid") {
       newOrderStatus = "payment_confirmed";

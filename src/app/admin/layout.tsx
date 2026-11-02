@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A]">
       {/* Admin sidebar and layout will be added in Phase 12 */}
       <div className="flex">
         <main className="flex-1 p-6">{children}</main>

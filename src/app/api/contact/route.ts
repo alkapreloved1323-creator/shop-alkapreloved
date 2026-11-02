@@ -1,0 +1,5 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+const schema = z.object({ name: z.string().min(2), email: z.string().email(), message: z.string().min(10).max(3000) });
+export async function POST(request: NextRequest) { const parsed = schema.safeParse(await request.json()); if (!parsed.success) return NextResponse.json({ error: "Lengkapi nama, email, dan pesan." }, { status: 400 }); const supabase = createSupabaseAdminClient(); const { error } = await supabase.from("contact_messages").insert({ ...parsed.data, status: "unread" }); if (error) return NextResponse.json({ error: "Pesan belum dapat dikirim." }, { status: 500 }); return NextResponse.json({ message: "Pesan Anda sudah terkirim. Kami akan segera menghubungi Anda." }); }

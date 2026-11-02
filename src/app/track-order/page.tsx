@@ -1,15 +1,19 @@
-// Phase 11 — Track Order
-// This page will be implemented in Phase 11.
+"use client";
+
+import { FormEvent, useState } from "react";
+import Link from "next/link";
+import { ArrowRight, Check, Circle, Package, Search, Truck } from "lucide-react";
+import { Footer, KauppaNavbar } from "@/components/storefront";
+
+type TrackingResult = { order_number: string; customer_name: string; total: number; payment_status: string; order_status: string; shipping_provider: string | null; shipping_service: string | null; tracking_number: string | null; created_at: string; updated_at: string };
+const steps = [{ key: "pending_payment", label: "Order placed" }, { key: "payment_confirmed", label: "Payment confirmed" }, { key: "processing", label: "Being prepared" }, { key: "shipped", label: "On its way" }, { key: "delivered", label: "Delivered" }];
+const statusIndex = (status: string) => status === "packed" ? 3 : Math.max(0, steps.findIndex((step) => step.key === status));
+const formatPrice = (value: number) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
 
 export default function TrackOrderPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-500">Track Order — Phase 11</p>
-    </div>
-  );
+  const [result, setResult] = useState<TrackingResult | null>(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setLoading(true); setError(""); setResult(null); const form = new FormData(event.currentTarget); try { const response = await fetch("/api/orders/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order_number: form.get("orderNumber"), identifier: form.get("identifier") }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error); setResult(data.order); } catch (requestError) { setError(requestError instanceof Error ? requestError.message : "Pesanan tidak ditemukan."); } finally { setLoading(false); } }
+  return <main><KauppaNavbar /><section className="tracking-page container"><div className="tracking-hero"><p className="eyebrow">Order care</p><h1>Where is your <em>piece?</em></h1><p>Enter your order details to follow its journey, from our studio to your door.</p></div><div className="tracking-card"><form onSubmit={handleSubmit} className="tracking-form"><label>Order number<input name="orderNumber" placeholder="ALK-20260925-2841" required pattern="ALK-\d{8}-\d{4}" /></label><label>Email or WhatsApp<input name="identifier" placeholder="you@example.com" required minLength={5} /></label><button className="button button-dark" type="submit" disabled={loading}><Search size={16} />{loading ? "Finding order..." : "Track order"}</button></form>{error && <p className="tracking-error">{error}</p>}<p className="tracking-help">Your order number was included in your confirmation email.</p></div>{result && <section className="tracking-result"><div className="tracking-result-heading"><div><p className="eyebrow">{result.order_number}</p><h2>Thank you, {result.customer_name}.</h2></div><strong>{formatPrice(result.total)}</strong></div><div className="tracking-progress">{steps.map((step, index) => <div className={`tracking-step ${index <= statusIndex(result.order_status) ? "is-complete" : ""}`} key={step.key}><span>{index <= statusIndex(result.order_status) ? <Check size={14} /> : <Circle size={12} />}</span><p>{step.label}</p></div>)}</div><div className="tracking-shipment"><div><Package size={18} /><span>Current status<strong>{result.order_status.replaceAll("_", " ")}</strong></span></div>{result.tracking_number ? <div><Truck size={18} /><span>{result.shipping_provider || "Courier"}<strong>{result.tracking_number}</strong></span></div> : <p>Your shipment tracking number will appear here once your order is dispatched.</p>}</div><Link href="/shop" className="tracking-continue">Continue browsing <ArrowRight size={14} /></Link></section>}</section><Footer /></main>;
 }
-
-export const metadata = {
-  title: "Lacak Pesanan — AlkaPreloved",
-  description: "Lacak status pesanan dan pengiriman Anda.",
-};
