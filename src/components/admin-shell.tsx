@@ -51,6 +51,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+  const isItemActive = (item: NavItem) => isActive(item.href) || item.children?.some((child) => pathname === child.href) === true;
 
   if (pathname === "/admin/login") return <>{children}</>;
   if (!authorized) return <main className="admin-auth-check" aria-live="polite">Memeriksa sesi admin...</main>;
@@ -89,14 +90,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <div key={item.href} className="admin-sidebar-group">
               <Link
                 href={item.href}
-                className={`admin-sidebar-link ${isActive(item.href) ? "is-active" : ""}`}
+                className={`admin-sidebar-link ${isItemActive(item) ? "is-active" : ""}`}
                 onClick={() => setSidebarOpen(false)}
               >
                 <item.icon size={17} />
                 <span>{item.label}</span>
                 <ChevronRight size={13} className="admin-sidebar-arrow" />
               </Link>
-              {item.children && <div className="admin-sidebar-subnav">{item.children.map((child) => <Link key={child.href} href={child.href} className={`admin-sidebar-sublink ${pathname === child.href ? "is-active" : ""}`} onClick={() => setSidebarOpen(false)}>{child.label}</Link>)}</div>}
+              {item.children && isItemActive(item) && <div className="admin-sidebar-subnav">{item.children.map((child) => <Link key={child.href} href={child.href} className={`admin-sidebar-sublink ${pathname === child.href ? "is-active" : ""}`} onClick={() => setSidebarOpen(false)}>{child.label}</Link>)}</div>}
             </div>
           ))}
         </nav>
