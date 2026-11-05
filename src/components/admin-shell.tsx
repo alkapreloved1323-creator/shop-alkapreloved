@@ -9,6 +9,7 @@ import {
   Package,
   ShoppingCart,
   Tag,
+  UsersRound,
   Settings,
   Menu,
   X,
@@ -16,11 +17,14 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const navItems = [
+type NavItem = { href: string; label: string; icon: typeof LayoutDashboard; children?: { href: string; label: string }[] };
+
+const navItems: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Produk", icon: Package },
   { href: "/admin/orders", label: "Pesanan", icon: ShoppingCart },
   { href: "/admin/promos", label: "Promo", icon: Tag },
+  { href: "/admin/crm", label: "CRM Customer", icon: UsersRound, children: [{ href: "/admin/crm", label: "CRM overview" }, { href: "/admin/customers", label: "Customers" }] },
   { href: "/admin/settings", label: "Pengaturan", icon: Settings },
 ];
 
@@ -82,16 +86,18 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <nav className="admin-sidebar-nav">
           <p className="admin-sidebar-label">Menu</p>
           {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`admin-sidebar-link ${isActive(item.href) ? "is-active" : ""}`}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <item.icon size={17} />
-              <span>{item.label}</span>
-              <ChevronRight size={13} className="admin-sidebar-arrow" />
-            </Link>
+            <div key={item.href} className="admin-sidebar-group">
+              <Link
+                href={item.href}
+                className={`admin-sidebar-link ${isActive(item.href) ? "is-active" : ""}`}
+                onClick={() => setSidebarOpen(false)}
+              >
+                <item.icon size={17} />
+                <span>{item.label}</span>
+                <ChevronRight size={13} className="admin-sidebar-arrow" />
+              </Link>
+              {item.children && <div className="admin-sidebar-subnav">{item.children.map((child) => <Link key={child.href} href={child.href} className={`admin-sidebar-sublink ${pathname === child.href ? "is-active" : ""}`} onClick={() => setSidebarOpen(false)}>{child.label}</Link>)}</div>}
+            </div>
           ))}
         </nav>
 
