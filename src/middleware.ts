@@ -12,6 +12,11 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   // Public pages can render without Supabase configuration; admin routes still
   // require the configured client and will be handled by the application.
+  const authEnabled = process.env.NEXT_PUBLIC_ADMIN_AUTH_ENABLED !== "false";
+  if (!authEnabled) {
+    return NextResponse.next();
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!supabaseUrl || !supabaseAnonKey) {

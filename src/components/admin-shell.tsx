@@ -27,10 +27,13 @@ const navItems = [
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState(
+    process.env.NEXT_PUBLIC_ADMIN_AUTH_ENABLED === "false",
+  );
 
   useEffect(() => {
     if (pathname === "/admin/login") return;
+    if (process.env.NEXT_PUBLIC_ADMIN_AUTH_ENABLED === "false") return;
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       window.location.replace("/admin/login?error=auth-not-configured");
       return;
