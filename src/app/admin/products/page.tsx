@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, Plus, Pencil, Archive, X, ImagePlus, Video, Trash2 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
-type ProductMedia = { id: string; file: File; url: string; kind: "image" | "video"; remoteUrl?: string };
+type ProductMedia = { id: string; file: File; url: string; kind: "image" | "video"; remoteUrl?: string; publicId?: string };
 type ProductRow = { id: string; name: string; description: string; category: string; price: number; stock: number; status: "active" | "draft" | "sold" | "archived"; condition: string };
 const isUuid = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -65,9 +65,9 @@ export default function AdminProductsPage() {
       const result = isUuid(editing.id) ? await supabase.from("products").update(payload).eq("id", editing.id).select("id").single() : await supabase.from("products").insert(payload).select("id").single();
       if (result.error || !result.data) throw new Error("Produk gagal disimpan ke Supabase.");
       const productId = result.data.id;
-      const uploaded = await Promise.all(media.filter((mediaItem) => !mediaItem.remoteUrl).map(async (mediaItem) => ({ item: mediaItem, cloudinary: await uploadMedia(mediaItem) })));
+      const uploaded = await Promise.all(media.filter((mediaItem) => !mediaItem.remoteUrl).map(async (mediaItem) => ({ mediaItem, cloudinary: await uploadMedia(mediaItem) })));
       if (uploaded.length) {
-        const { error: mediaError } = await supabase.from("product_images").insert(uploaded.map(({ item, cloudinary }, index) => ({ product_id: productId, storage_path: cloudinary.publicId, public_url: cloudinary.url, sort_order: index })));
+        const { error: mediaError } = await supabase.from("product_images").insert(uploaded.map(({ cloudinary }, index) => ({ product_id: productId, storage_path: cloudinary.publicId, public_url: cloudinary.url, sort_order: index })));
         if (mediaError) throw mediaError;
       }
       const saved = { ...editing, id: productId };
@@ -85,7 +85,16 @@ export default function AdminProductsPage() {
     setMedia((current) => [...current, ...files.map((file) => ({ id: `${file.name}-${file.lastModified}-${Math.random()}`, file, url: URL.createObjectURL(file), kind }))]);
     event.target.value = "";
   };
-  const removeMedia = (id: string) => setMedia((current) => { const item = current.find((entry) => entry.id === id); if (item) URL.revokeObjectURL(item.url); return current.filter((entry) => entry.id !== id); });
+  const removeMedia = async (id: string) => {
+    const item = media.find((entry) => entry.id === id);
+    if (!item) return;
+    if (item.remoteUrl) {
+      const publicId = item.remoteUrl.split("/upload/")[1]?.split(".")[0];
+      if (publicId) await fetch("/api/cloudinary/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ publicId, resourceType: item.kind }) });
+    }
+    URL.revokeObjectURL(item.url);
+    setMedia((current) => current.filter((entry) => entry.id !== id));
+  };
   useEffect(() => () => media.forEach((item) => URL.revokeObjectURL(item.url)), [media]);
 
   return <div className="admin-dashboard saas-dashboard saas-products-page"><header className="saas-heading"><div><p className="saas-eyebrow">Product management</p><h1>Produk <span>✦</span></h1><p>Kelola katalog, stok, dan performa koleksi dalam satu tempat.</p></div><div className="saas-heading-actions"><div className="saas-product-menu-wrap"><button className="saas-icon-button" aria-label="Product notifications" onClick={() => setNotificationsOpen((open) => !open)} aria-expanded={notificationsOpen}>⌁</button>{notificationsOpen && <div className="saas-product-popover"><strong>Catalog alerts</strong><p>{lowStockCount} products need restocking.</p><button onClick={() => { setStatus("active"); setNotificationsOpen(false); }}>View active inventory</button></div>}</div><div className="saas-product-menu-wrap"><button className="saas-date-button" onClick={() => setCatalogMenuOpen((open) => !open)} aria-expanded={catalogMenuOpen} aria-haspopup="listbox"><span>Catalog overview</span><span className="saas-catalog-chevron">⌄</span></button>{catalogMenuOpen && <div className="saas-product-popover saas-catalog-popover" role="listbox" aria-label="Catalog view"><button onClick={() => { setStatus("all"); setCatalogMenuOpen(false); }}>All products <small>Full catalog</small></button><button onClick={() => { setStatus("active"); setCatalogMenuOpen(false); }}>Active inventory <small>Published products</small></button><button onClick={() => { setStatus("draft"); setCatalogMenuOpen(false); }}>Draft products <small>Needs review</small></button></div>}</div><button className="saas-primary-button" onClick={newProduct}><Plus size={15} /> Add product</button></div></header>
