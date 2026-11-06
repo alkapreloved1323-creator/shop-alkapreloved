@@ -5,12 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 
 type Customer = { id: string; name: string; phone: string; source: string; segment: string; orders: number; spent: number; consent: boolean };
-const seed: Customer[] = [
-  { id: "1", name: "Alya Rahma", phone: "+62 812-3456-7890", source: "Instagram", segment: "VIP", orders: 8, spent: 4260000, consent: true },
-  { id: "2", name: "Dimas Pratama", phone: "+62 813-4567-8901", source: "Google", segment: "Active", orders: 3, spent: 1280000, consent: true },
-  { id: "3", name: "Nadia Putri", phone: "+62 821-5678-9012", source: "Referral", segment: "New", orders: 1, spent: 320000, consent: false },
-  { id: "4", name: "Raka Wijaya", phone: "+62 822-6789-0123", source: "TikTok", segment: "Inactive", orders: 2, spent: 780000, consent: true },
-];
+const seed: Customer[] = [];
 const money = (value: number) => `Rp ${value.toLocaleString("id-ID")}`;
 
 export default function AdminCustomersPage() {

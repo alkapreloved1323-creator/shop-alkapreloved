@@ -4,12 +4,7 @@ import { UsersRound, Megaphone, ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type Customer = { id: string; name: string; email: string; source: string; segment: string; orders: number; spent: number; consent: boolean; note: string };
-const seed: Customer[] = [
-  { id: "1", name: "Alya Rahma", email: "alya@example.com", source: "Instagram", segment: "VIP", orders: 8, spent: 4260000, consent: true, note: "Suka koleksi linen dan warna earth tone." },
-  { id: "2", name: "Dimas Pratama", email: "dimas@example.com", source: "Google", segment: "Active", orders: 3, spent: 1280000, consent: true, note: "Follow up untuk drop sneakers." },
-  { id: "3", name: "Nadia Putri", email: "nadia@example.com", source: "Referral", segment: "New", orders: 1, spent: 320000, consent: false, note: "" },
-  { id: "4", name: "Raka Wijaya", email: "raka@example.com", source: "TikTok", segment: "Inactive", orders: 2, spent: 780000, consent: true, note: "Belum order lagi sejak 90 hari." },
-];
+const seed: Customer[] = [];
 const money = (value: number) => `Rp ${value.toLocaleString("id-ID")}`;
 
 export default function AdminCrmPage() {

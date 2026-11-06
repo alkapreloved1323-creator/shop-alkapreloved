@@ -12,12 +12,7 @@ const defaultHistory = (status: string): ProcessStep[] => [
   { label: "Dalam perjalanan", detail: "Paket sedang dikirim", completed: ["shipped", "delivered", "completed"].includes(status) },
   { label: "Telah sampai", detail: "Pesanan diterima customer", completed: ["delivered", "completed"].includes(status) },
 ];
-const initialOrders: Order[] = [
-  { id: "ALK-20261101-2841", customer: "Nadia Putri", email: "nadia@example.com", phone: "081234567890", item: "Linen Oversized Shirt", total: 185000, payment: "paid", status: "payment_confirmed", courier: "JNE", tracking: "", date: "1 Nov 2026", history: defaultHistory("payment_confirmed") },
-  { id: "ALK-20261031-1830", customer: "Raka Adi", email: "raka@example.com", phone: "081298765432", item: "Everyday Leather Tote", total: 320000, payment: "paid", status: "processing", courier: "J&T", tracking: "", date: "31 Okt 2026", history: defaultHistory("processing") },
-  { id: "ALK-20261030-9072", customer: "Maya Sari", email: "maya@example.com", phone: "081345678901", item: "Soft Tailored Trousers", total: 240000, payment: "paid", status: "shipped", courier: "SiCepat", tracking: "SC123456789", date: "30 Okt 2026", history: defaultHistory("shipped") },
-  { id: "ALK-20261029-4418", customer: "Dimas Kurnia", email: "dimas@example.com", phone: "081223344556", item: "Cotton Day Dress", total: 275000, payment: "pending", status: "pending_payment", courier: "JNE", tracking: "", date: "29 Okt 2026", history: defaultHistory("pending_payment") },
-];
+const initialOrders: Order[] = [];
 const statuses = ["pending_payment", "payment_confirmed", "processing", "packed", "shipped", "delivered", "completed", "cancelled"];
 const money = (value: number) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
 
