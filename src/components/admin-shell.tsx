@@ -10,7 +10,6 @@ import {
   ShoppingCart,
   Tag,
   UsersRound,
-  Settings,
   Menu,
   X,
   ExternalLink,
@@ -25,7 +24,6 @@ const navItems: NavItem[] = [
   { href: "/admin/orders", label: "Pesanan", icon: ShoppingCart },
   { href: "/admin/promos", label: "Promo", icon: Tag },
   { href: "/admin/crm", label: "CRM Customer", icon: UsersRound, children: [{ href: "/admin/crm", label: "CRM overview" }, { href: "/admin/customers", label: "Customers" }] },
-  { href: "/admin/settings", label: "Pengaturan", icon: Settings },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
