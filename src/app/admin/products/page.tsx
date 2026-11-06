@@ -8,12 +8,7 @@ type ProductMedia = { id: string; file: File; url: string; kind: "image" | "vide
 type ProductRow = { id: string; name: string; description: string; category: string; price: number; stock: number; status: "active" | "draft" | "sold" | "archived"; condition: string };
 const isUuid = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const initialProducts: ProductRow[] = [
-  { id: "linen-oversized-shirt", name: "Linen Oversized Shirt", description: "Kemeja linen oversized dengan potongan santai dan bahan ringan untuk tampilan sehari-hari.", category: "Tops", price: 185000, stock: 2, status: "active", condition: "Very good" },
-  { id: "everyday-leather-tote", name: "Everyday Leather Tote", description: "Tas tote kulit dengan ruang luas, cocok untuk aktivitas harian.", category: "Accessories", price: 320000, stock: 1, status: "active", condition: "Good" },
-  { id: "soft-tailored-trousers", name: "Soft Tailored Trousers", description: "Celana tailored dengan siluet lembut dan nyaman digunakan sepanjang hari.", category: "Bottoms", price: 240000, stock: 1, status: "active", condition: "Like new" },
-  { id: "cotton-day-dress", name: "Cotton Day Dress", description: "Dress katun ringan dengan potongan feminin untuk gaya kasual yang effortless.", category: "Dresses", price: 275000, stock: 3, status: "active", condition: "Very good" },
-];
+const initialProducts: ProductRow[] = [];
 const money = (value: number) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
 
 export default function AdminProductsPage() {
