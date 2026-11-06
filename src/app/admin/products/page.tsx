@@ -2,9 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Search, Plus, Pencil, Archive, X, ImagePlus, Video, Trash2 } from "lucide-react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
-type ProductMedia = { id: string; file: File; url: string; kind: "image" | "video" };
+type ProductMedia = { id: string; file: File; url: string; kind: "image" | "video"; remoteUrl?: string };
 type ProductRow = { id: string; name: string; description: string; category: string; price: number; stock: number; status: "active" | "draft" | "sold" | "archived"; condition: string };
+const isUuid = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const initialProducts: ProductRow[] = [
   { id: "linen-oversized-shirt", name: "Linen Oversized Shirt", description: "Kemeja linen oversized dengan potongan santai dan bahan ringan untuk tampilan sehari-hari.", category: "Tops", price: 185000, stock: 2, status: "active", condition: "Very good" },
   { id: "everyday-leather-tote", name: "Everyday Leather Tote", description: "Tas tote kulit dengan ruang luas, cocok untuk aktivitas harian.", category: "Accessories", price: 320000, stock: 1, status: "active", condition: "Good" },
@@ -23,17 +26,63 @@ export default function AdminProductsPage() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [media, setMedia] = useState<ProductMedia[]>([]);
+  useEffect(() => {
+    const loadProducts = async () => {
+      const supabase = createSupabaseBrowserClient();
+      const { data } = await supabase.from("products").select("id,name,description,price,stock,status,condition,category:categories(name)").order("created_at", { ascending: false });
+      if (data) {
+        setProducts(data.map((item) => ({ id: item.id, name: item.name, description: item.description ?? "", category: Array.isArray(item.category) ? (item.category[0] as { name?: string } | undefined)?.name ?? "Uncategorized" : (item.category as { name?: string } | null)?.name ?? "Uncategorized", price: Number(item.price), stock: item.stock, status: item.status, condition: item.condition.replace("_", " ") })));
+      }
+    };
+    loadProducts().catch(() => undefined);
+  }, []);
   const filtered = useMemo(() => products.filter((p) => (status === "all" || p.status === status) && `${p.name} ${p.category} ${p.description}`.toLowerCase().includes(query.toLowerCase())), [products, query, status]);
   const activeCount = products.filter((product) => product.status === "active").length;
   const lowStockCount = products.filter((product) => product.stock > 0 && product.stock <= 2).length;
   const inventoryValue = products.reduce((total, product) => total + product.price * product.stock, 0);
-  const save = (event: React.FormEvent<HTMLFormElement>) => {
+  const uploadMedia = async (item: ProductMedia) => {
+    const signatureResponse = await fetch("/api/cloudinary/signature", { method: "POST" });
+    if (!signatureResponse.ok) throw new Error("Cloudinary belum siap.");
+    const { cloudName, apiKey, timestamp, signature } = await signatureResponse.json();
+    const resourceType = item.kind === "video" ? "video" : "image";
+    const body = new FormData();
+    body.append("file", item.file);
+    body.append("api_key", apiKey);
+    body.append("timestamp", String(timestamp));
+    body.append("signature", signature);
+    body.append("folder", "alkapreloved/products");
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, { method: "POST", body });
+    if (!response.ok) throw new Error("Upload media ke Cloudinary gagal.");
+    const result = await response.json();
+    return { url: result.secure_url as string, publicId: result.public_id as string };
+  };
+
+  const save = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!editing) return;
-    setProducts((current) => current.some((p) => p.id === editing.id) ? current.map((p) => p.id === editing.id ? editing : p) : [...current, editing]);
-    setEditing(null);
-    setNotice("Perubahan produk tersimpan di sesi ini.");
-    window.setTimeout(() => setNotice(""), 3000);
+    const supabase = createSupabaseBrowserClient();
+    try {
+      const categorySlug = slugify(editing.category);
+      let categoryId: string | null = null;
+      const categoryResult = await supabase.from("categories").upsert({ name: editing.category, slug: categorySlug }, { onConflict: "slug" }).select("id").single();
+      if (!categoryResult.error) categoryId = categoryResult.data.id;
+      const payload = { name: editing.name, slug: slugify(editing.name), description: editing.description, category_id: categoryId, price: editing.price, stock: editing.stock, status: editing.status, condition: editing.condition.toLowerCase().replace(/ /g, "_") };
+      const result = isUuid(editing.id) ? await supabase.from("products").update(payload).eq("id", editing.id).select("id").single() : await supabase.from("products").insert(payload).select("id").single();
+      if (result.error || !result.data) throw new Error("Produk gagal disimpan ke Supabase.");
+      const productId = result.data.id;
+      const uploaded = await Promise.all(media.filter((mediaItem) => !mediaItem.remoteUrl).map(async (mediaItem) => ({ item: mediaItem, cloudinary: await uploadMedia(mediaItem) })));
+      if (uploaded.length) {
+        const { error: mediaError } = await supabase.from("product_images").insert(uploaded.map(({ item, cloudinary }, index) => ({ product_id: productId, storage_path: cloudinary.publicId, public_url: cloudinary.url, sort_order: index })));
+        if (mediaError) throw mediaError;
+      }
+      const saved = { ...editing, id: productId };
+      setProducts((current) => current.some((p) => p.id === saved.id) ? current.map((p) => p.id === saved.id ? saved : p) : [...current, saved]);
+      setEditing(null);
+      setNotice("Produk dan media tersimpan di Supabase/Cloudinary.");
+      window.setTimeout(() => setNotice(""), 3000);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Produk gagal disimpan.");
+    }
   };
   const newProduct = () => { setMedia([]); setEditing({ id: `produk-${Date.now()}`, name: "", description: "", category: "Tops", price: 1000, stock: 0, status: "draft", condition: "Good" }); };
   const addMedia = (event: React.ChangeEvent<HTMLInputElement>, kind: ProductMedia["kind"]) => {

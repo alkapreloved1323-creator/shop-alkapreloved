@@ -19,6 +19,12 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      {
+        // Cloudinary product media
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
     ],
     // Optimize images on the fly
     formats: ["image/avif", "image/webp"],
