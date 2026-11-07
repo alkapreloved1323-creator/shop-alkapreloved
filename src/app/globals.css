@@ -244,7 +244,7 @@
 .checkout-layout { display:grid; grid-template-columns:1.3fr .8fr; gap:clamp(45px,8vw,110px); padding-top:45px; }
 .checkout-form fieldset { border:0; padding:0; margin:0 0 42px; }
 .checkout-form legend { font-size:16px; letter-spacing:-.03em; margin-bottom:24px; }
-.checkout-form label { display:flex; flex-direction:column; gap:9px; color:var(--color-muted); font-size:10px; margin-bottom:18px; }
+.checkout-form label { display:flex; flex-direction:column; gap:9px; color:var(--color-muted); font-size:10px; margin-bottom:18px; } .checkout-form label.checkbox-field { flex-direction:row; align-items:flex-start; gap:9px; margin-top:30px; margin-bottom:18px; line-height:1.5; cursor:pointer; } .checkout-form label.checkbox-field input { width:16px; height:16px; flex:0 0 16px; margin:0; accent-color:var(--color-brand-500); }
 .checkout-form input,.checkout-form textarea { width:100%; border:1px solid var(--color-line); background:white; padding:13px 14px; color:var(--color-ink); font:inherit; font-size:12px; outline:0; transition:border-color .2s; resize:vertical; }
 .checkout-form input:focus,.checkout-form textarea:focus { border-color:var(--color-brand-500); }
 .checkout-form select { width:100%; border:1px solid var(--color-line); background:rgba(255,255,255,.78); padding:13px 42px 13px 14px; color:var(--color-ink); font:inherit; font-size:12px; outline:0; cursor:pointer; appearance:none; -webkit-appearance:none; transition:border-color .2s, box-shadow .2s, background .2s; background-image:linear-gradient(45deg, transparent 50%, var(--color-brand-500) 50%),linear-gradient(135deg, var(--color-brand-500) 50%, transparent 50%); background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%; background-size:5px 5px,5px 5px; background-repeat:no-repeat; }
@@ -256,7 +256,7 @@
 .spin { animation:spin .9s linear infinite; } @keyframes spin { to { transform:rotate(360deg); } }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 .optional { color:var(--color-brand-500); margin-left:5px; }
-.checkout-summary { background:var(--color-brand-50); height:max-content; padding:30px; }
+.checkout-summary { background:var(--color-brand-50); height:max-content; padding:30px; } .voucher-box { margin:22px 0 10px; padding:14px; border:1px solid var(--color-brand-200); border-radius:10px; background:rgba(255,255,255,.62); } .voucher-box label { display:block; margin:0 0 8px; color:var(--color-ink); font-size:11px; font-weight:600; } .voucher-input-row { display:flex; gap:7px; } .voucher-input-row input { min-width:0; padding:10px; border:1px solid var(--color-line); background:white; font:inherit; font-size:11px; } .voucher-input-row button { border:0; padding:0 12px; background:var(--color-brand-700); color:white; font:inherit; font-size:10px; font-weight:600; cursor:pointer; border-radius:6px; } .voucher-error,.voucher-success { display:block; margin-top:8px; font-size:10px; } .voucher-error { color:#b42318; } .voucher-success { color:#16805b; } .voucher-discount strong { color:#16805b; }
 .checkout-item { display:flex; justify-content:space-between; gap:18px; padding:18px 0; border-bottom:1px solid var(--color-brand-200); font-size:11px; }
 .checkout-item div { display:flex; flex-direction:column; gap:6px; }
 .checkout-item span { color:var(--color-muted); font-size:10px; }
