@@ -724,6 +724,7 @@ export type Product = {
 
 export function KauppaNavbar() {
   const [open, setOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { itemCount } = useCart();
@@ -739,7 +740,7 @@ export function KauppaNavbar() {
       {/* Main navbar */}
       <div className="kauppa-navbar-main">
         <div className="kauppa-container kauppa-navbar-inner">
-          <button className="kauppa-hamburger" onClick={() => setOpen(true)} aria-label="Open menu">
+          <button className="kauppa-hamburger" onClick={() => setOpen(true)} aria-label="Open menu" aria-expanded={open}>
             <Menu size={20} />
           </button>
           <Link href="/" className="kauppa-brand">
@@ -808,12 +809,13 @@ export function KauppaNavbar() {
             </div>
             <nav className="mobile-nav">
               <Link href="/" onClick={() => setOpen(false)}>Beranda<ArrowRight size={17} /></Link>
-              <p className="mobile-nav-label">Kategori</p>
-              {["Semua", "Fashion", "Accessories", "Footwear", "Outerwear", "Vintage"].map((category) => (
+              <button type="button" className="mobile-nav-category-toggle" onClick={() => setCategoriesOpen((value) => !value)} aria-expanded={categoriesOpen}><span>Kategori</span><ChevronDown size={17} className={categoriesOpen ? "is-open" : ""} /></button>
+              {categoriesOpen && <div className="mobile-nav-category-list">{["Semua", "Fashion", "Accessories", "Footwear", "Outerwear", "Vintage"].map((category) => (
                 <Link key={category} href={category === "Semua" ? "/shop" : `/shop?category=${encodeURIComponent(category)}`} onClick={() => setOpen(false)}>
                   {category}<ArrowRight size={17} />
                 </Link>
               ))}
+              </div>}
               <Link href="/promo" onClick={() => setOpen(false)}>Promo<ArrowRight size={17} /></Link>
               <Link href="/about" onClick={() => setOpen(false)}>Tentang<ArrowRight size={17} /></Link>
               <Link href="/contact" onClick={() => setOpen(false)}>Kontak<ArrowRight size={17} /></Link>

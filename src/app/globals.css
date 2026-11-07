@@ -95,7 +95,7 @@
   .category-section { padding:0 0 130px; } .category-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:9px; } .category-card { min-height:165px; padding:20px; display:flex; align-items:flex-end; justify-content:space-between; color:var(--color-ink); background:var(--color-brand-100); transition:transform .25s, filter .25s; } .category-card:hover { transform:translateY(-5px); filter:brightness(.97); } .category-card span { font-size:15px; letter-spacing:-.04em; } .category-arrow { color:var(--color-brand-500); transform:rotate(-45deg); } .category-1 { background:#FFEDD5; }.category-2 { background:#DCFCE7; }.category-3 { background:#FED7AA; }.category-4 { background:#E0E7FF; }.category-5 { background:#D1FAE5; }
   .manifesto { background:var(--color-brand-950); color:white; text-align:center; padding:135px 0 145px; } .manifesto .eyebrow { color:var(--color-brand-300); } .manifesto h2 { font-size:clamp(48px, 7vw, 92px); margin:29px auto 36px; } .manifesto h2 em { color:var(--color-brand-300); }
   .site-footer { background:#EEF2FF; padding:78px 0 25px; } .footer-grid { display:grid; grid-template-columns:1.4fr .8fr .8fr 1.5fr; gap:40px; padding-bottom:80px; } .footer-brand p { color:var(--color-muted); font-size:13px; line-height:1.8; margin-top:25px; } .site-footer > *:not(.footer-bottom) a,.site-footer > *:not(.footer-bottom) p:not(.footer-label) { display:block; color:var(--color-muted); font-size:12px; line-height:2.15; } .footer-label { color:var(--color-ink); font-size:10px; text-transform:uppercase; letter-spacing:.14em; margin-bottom:15px; } .footer-newsletter > p:not(.footer-label) { margin-bottom:14px; } .newsletter-form { display:flex; border-bottom:1px solid var(--color-brand-300); max-width:290px; } .newsletter-form input { border:0; background:transparent; outline:0; padding:10px 0; width:100%; font:inherit; font-size:11px; } .newsletter-form button { border:0; background:transparent; cursor:pointer; color:var(--color-brand-500); } .footer-bottom { border-top:1px solid var(--color-brand-200); padding-top:20px; display:flex; justify-content:space-between; color:var(--color-muted); font-size:10px; }
-  .mobile-menu-overlay { position:fixed; inset:0; background:rgba(15,23,42,.35); z-index:50; } .mobile-menu { width:min(340px, 88vw); height:100%; background:var(--color-paper); padding:25px; animation:slideIn .3s ease; } .mobile-menu-top { display:flex; justify-content:space-between; align-items:center; } .mobile-nav { display:flex; flex-direction:column; margin-top:70px; } .mobile-nav a { display:flex; justify-content:space-between; padding:17px 0; border-bottom:1px solid var(--color-line); font-size:23px; letter-spacing:-.05em; } .mobile-nav-label { color:var(--color-brand-500); font-size:10px; text-transform:uppercase; letter-spacing:.16em; margin:30px 0 0; } .mobile-nav-label + a { padding-top:10px; } .mobile-menu-note { color:var(--color-muted); font-size:12px; margin-top:45px; max-width:210px; }
+  .mobile-menu-overlay { position:fixed; inset:0; background:rgba(15,23,42,.48); backdrop-filter:blur(4px); z-index:50; animation:fadeIn .2s ease; } .mobile-menu { width:min(340px, 88vw); height:100%; background:var(--color-paper); padding:20px 22px; box-shadow:18px 0 45px rgba(15,23,42,.18); animation:slideIn .3s ease; overflow-y:auto; } .mobile-menu-top { display:flex; justify-content:space-between; align-items:center; padding-bottom:18px; border-bottom:1px solid var(--color-line); } .mobile-menu-top .icon-button { width:36px; height:36px; border:1px solid var(--color-line); border-radius:50%; background:transparent; color:var(--color-ink); display:grid; place-items:center; } .mobile-nav { display:flex; flex-direction:column; margin-top:24px; } .mobile-nav a { display:flex; justify-content:space-between; align-items:center; padding:15px 2px; border-bottom:1px solid var(--color-line); color:var(--color-ink); font-size:18px; letter-spacing:-.03em; } .mobile-nav a svg { color:var(--color-brand-500); transition:transform .2s ease; } .mobile-nav a:active svg { transform:translateX(4px); } .mobile-nav-category-toggle { display:flex; justify-content:space-between; align-items:center; width:100%; border:0; border-bottom:1px solid var(--color-line); padding:15px 2px; background:transparent; color:var(--color-brand-500); font:inherit; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.16em; text-align:left; cursor:pointer; } .mobile-nav-category-toggle svg { transition:transform .2s ease; } .mobile-nav-category-toggle svg.is-open { transform:rotate(180deg); } .mobile-nav-category-list { display:flex; flex-direction:column; padding:4px 0 8px 12px; border-bottom:1px solid var(--color-line); } .mobile-nav-category-list a { border-bottom:0; padding:11px 2px; font-size:16px; } .mobile-nav-label { color:var(--color-brand-500); font-size:10px; text-transform:uppercase; letter-spacing:.16em; margin:24px 0 2px; } .mobile-nav-label + a { padding-top:13px; } .mobile-menu-note { color:var(--color-muted); font-size:12px; margin-top:45px; max-width:210px; } @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
   @keyframes slideIn { from { transform:translateX(-100%); } to { transform:translateX(0); } }
 }
 
@@ -552,7 +552,34 @@
 @media (max-width: 640px) {
   .container, .kauppa-container { width: min(100% - 32px, 600px); }
   .kauppa-navbar-inner { height: 58px; gap: 10px; }
-  .kauppa-brand-name { font-size: 16px; }
+  .kauppa-hamburger { display: grid; place-items: center; flex: none; }
+  .kauppa-main-nav { display: none; }
+  .kauppa-brand { min-width: 0; }
+  .kauppa-brand-name { font-size: 16px; white-space: nowrap; }
+  .kauppa-search-banner { padding: 10px 0; }
+  .kauppa-search-bar { height: auto; min-height: 44px; flex-wrap: wrap; }
+  .kauppa-search-input { min-width: 0; height: 42px; }
+  .kauppa-search-divider { display: none; }
+  .kauppa-search-filter { height: 36px; flex: 1; justify-content: center; border-top: 1px solid #E2E8F0; padding: 0 8px; }
+  .kauppa-search-btn { width: 44px; height: 42px; }
+  .kauppa-cats-section { padding: 12px 0; }
+  .kauppa-cat-row { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding: 2px 1px 6px; scrollbar-width: none; }
+  .kauppa-cat-row::-webkit-scrollbar { display: none; }
+  .kauppa-cat-item { flex: 0 0 68px; min-width: 68px; font-size: 11px; }
+  .kauppa-cat-icon { width: 46px; height: 46px; }
+  .kauppa-section { padding: 28px 0; }
+  .kauppa-section-header { gap: 12px; margin-bottom: 14px; }
+  .kauppa-section-title { font-size: 18px; }
+  .kauppa-view-all-btn { padding: 6px 10px; font-size: 10px; }
+  .kauppa-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .kauppa-product-grid-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .kauppa-card-info { padding: 9px 10px; }
+  .kauppa-card-name { font-size: 12px; line-height: 1.3; }
+  .kauppa-card-price { font-size: 12px; }
+  .kauppa-card-add { width: 28px; height: 28px; }
+  .kauppa-services-grid { grid-template-columns: 1fr; gap: 12px; }
+  .kauppa-service-card { min-height: 230px; }
+  .kauppa-footer-top { padding: 32px 0 26px; }
   .kauppa-brand-logo { width: 30px; height: 30px; font-size: 12px; }
   .kauppa-nav-actions { gap: 0; }
   .kauppa-icon-btn { width: 34px; height: 34px; }
@@ -590,13 +617,32 @@
   .catalog-reference-name { font-size: 12px; }
   .catalog-reference-price { font-size: 13px; }
   .catalog-reference-sidebar { width: min(330px, 88vw); }
-  .product-detail-page { padding-top: 100px; padding-bottom: 80px; }
-  .detail-layout { grid-template-columns: 1fr; gap: 34px; }
-  .detail-main-image { aspect-ratio: .9; }
-  .detail-info h1 { font-size: clamp(38px, 12vw, 56px); }
-  .detail-actions { flex-wrap: wrap; }
-  .detail-actions .add-cart-button { min-width: 0; }
-  .detail-facts { gap: 8px; }
+  .product-detail-page { width: min(100% - 24px, 600px); padding-top: 82px; padding-bottom: 64px; }
+  .detail-breadcrumb { gap: 5px; margin-bottom: 16px; font-size: 8px; text-overflow: ellipsis; }
+  .detail-layout { grid-template-columns: 1fr; gap: 26px; }
+  .detail-main-image { aspect-ratio: .82; border-radius: 14px; }
+  .gallery-arrow { width: 32px; height: 32px; }
+  .gallery-prev { left: 10px; }
+  .gallery-next { right: 10px; }
+  .detail-thumbnails { gap: 7px; margin-top: 8px; }
+  .detail-thumbnails button { flex-basis: 58px; width: 58px; height: 70px; border-radius: 8px; }
+  .detail-info { padding: 0 4px; }
+  .detail-info h1 { font-size: clamp(32px, 10vw, 46px); line-height: .98; margin: 14px 0 12px; }
+  .detail-price { font-size: 16px; }
+  .detail-rule { margin: 22px 0 18px; }
+  .detail-condition { padding-bottom: 18px; }
+  .detail-description { font-size: 12px; line-height: 1.7; }
+  .detail-facts { gap: 7px; padding: 16px 0; margin: 22px 0; }
+  .detail-facts span { font-size: 8px; }
+  .detail-facts strong { font-size: 10px; }
+  .detail-actions { display: grid; grid-template-columns: 92px minmax(0, 1fr) 42px 42px; gap: 7px; }
+  .quantity-control { width: auto; min-width: 0; }
+  .quantity-control button { padding: 8px 5px; }
+  .detail-actions .add-cart-button { min-width: 0; padding-inline: 8px; font-size: 11px; }
+  .detail-heart { width: 42px; }
+  .detail-note { margin-top: 18px; }
+  .related-products { margin-top: 64px; padding-top: 42px; }
+  .related-products h2 { font-size: 32px; margin-bottom: 22px; }
   .related-products { margin-top: 78px; padding-top: 52px; }
   .cart-page, .tracking-page, .wishlist-page, .checkout-page { padding-top: 98px; padding-bottom: 80px; }
   .cart-heading, .wishlist-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
