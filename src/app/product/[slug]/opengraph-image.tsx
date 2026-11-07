@@ -33,7 +33,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
         </div>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 50px" }}>
           <div style={{ display: "flex", color: "#4f46e5", fontSize: 28, fontWeight: 700, marginBottom: 28 }}>alkapreloved</div>
-          <div style={{ display: "flex", color: "#64748b", fontSize: 20, textTransform: "uppercase", letterSpacing: 3, marginBottom: 16 }}>Preloved fashion</div>
+          <div style={{ display: "flex", color: "#64748b", fontSize: 20, textTransform: "uppercase", letterSpacing: 3, marginBottom: 16 }}>Like New, Look New, Feel Brand New</div>
           <div style={{ display: "flex", fontSize: 48, lineHeight: 1.08, fontWeight: 700, marginBottom: 22 }}>{name}</div>
           <div style={{ display: "flex", color: "#4f46e5", fontSize: 34, fontWeight: 700 }}>{price}</div>
           <div style={{ display: "flex", color: "#64748b", fontSize: 20, marginTop: 28 }}>www.alkapreloved.my.id</div>
