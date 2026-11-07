@@ -46,7 +46,7 @@ export default function AdminPromosPage() {
   const addPromo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); const data = new FormData(event.currentTarget);
     const promo = { title: String(data.get("title")), code: String(data.get("code")).toUpperCase(), discount: Number(data.get("discount")), maxDiscount: type === "percent" && data.get("maxDiscount") ? Number(data.get("maxDiscount")) : null, type, starts_on: String(data.get("starts")), ends_on: String(data.get("ends")), active: true };
-    supabase.from("promotions").insert({ ...promo, max_discount: promo.maxDiscount }).select("id").single().then(({ data: saved, error }) => {
+    supabase.from("promotions").insert({ title: promo.title, code: promo.code, discount: promo.discount, max_discount: promo.maxDiscount, type: promo.type, starts_on: promo.starts_on, ends_on: promo.ends_on, active: promo.active }).select("id").single().then(({ data: saved, error }) => {
       if (error || !saved) { setNotice(`Promo gagal disimpan: ${error?.message ?? "data tidak dikembalikan"}`); return; }
       setPromos((list) => [{ ...promo, id: saved.id, bundleItems: type === "bundle" ? products.filter((product) => selectedProducts.includes(product.id)).map((product) => product.name) : [], starts: promo.starts_on, ends: promo.ends_on }, ...list]);
       setForm(false); setType("percent"); setSelectedProducts([]); setProductQuery(""); setNotice("Promo berhasil disimpan ke Supabase."); window.setTimeout(() => setNotice(""), 3000);
