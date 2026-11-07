@@ -2,14 +2,19 @@
 
 import { UsersRound, Megaphone, ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
-type Customer = { id: string; name: string; email: string; source: string; segment: string; orders: number; spent: number; consent: boolean; note: string };
+type Customer = { id: string; name: string; phone: string; source: string; segment: string; orders: number; spent: number; consent: boolean; note: string };
 const seed: Customer[] = [];
 const money = (value: number) => `Rp ${value.toLocaleString("id-ID")}`;
 
 export default function AdminCrmPage() {
   const router = useRouter();
-  const customers = seed;
+  const [customers, setCustomers] = useState<Customer[]>(seed);
+  useEffect(() => {
+    createSupabaseBrowserClient().from("customers").select("id,full_name,phone,source,total_orders,total_spent,marketing_consent").order("created_at", { ascending: false }).then(({ data }) => setCustomers((data ?? []).map((customer) => ({ id: customer.id, name: customer.full_name, phone: customer.phone ?? "-", source: customer.source, segment: Number(customer.total_orders) >= 5 ? "VIP" : Number(customer.total_orders) > 1 ? "Active" : "New", orders: Number(customer.total_orders), spent: Number(customer.total_spent), consent: customer.marketing_consent, note: "" }))));
+  }, []);
   const totalSpent = customers.reduce((sum, customer) => sum + customer.spent, 0);
   const sourceCounts = customers.reduce<Record<string, number>>((counts, customer) => ({ ...counts, [customer.source]: (counts[customer.source] ?? 0) + 1 }), {});
   const topSource = Object.entries(sourceCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? "—";

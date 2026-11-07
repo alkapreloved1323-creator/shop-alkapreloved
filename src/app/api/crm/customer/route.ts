@@ -4,7 +4,6 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const sourceValues = ["direct", "instagram", "facebook", "google", "tiktok", "referral", "whatsapp", "marketplace", "other"] as const;
 const schema = z.object({
-  email: z.string().email(),
   full_name: z.string().min(2).max(120),
   phone: z.string().max(30).optional(),
   source: z.enum(sourceValues).default("direct"),
@@ -27,7 +26,7 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase.from("customers").upsert({
       ...customer,
       consented_at: customer.marketing_consent ? new Date().toISOString() : null,
-    }, { onConflict: "email" });
+    }, { onConflict: "phone" });
     if (error) throw error;
     return NextResponse.json({ ok: true });
   } catch {
