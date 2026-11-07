@@ -10,6 +10,8 @@ import {
   ShoppingCart,
   Tag,
   UsersRound,
+  ShieldCheck,
+  WalletCards,
   Menu,
   X,
   ExternalLink,
@@ -24,6 +26,8 @@ const navItems: NavItem[] = [
   { href: "/admin/orders", label: "Pesanan", icon: ShoppingCart },
   { href: "/admin/promos", label: "Promo", icon: Tag },
   { href: "/admin/crm", label: "CRM Customer", icon: UsersRound, children: [{ href: "/admin/crm", label: "CRM overview" }, { href: "/admin/customers", label: "Customers" }] },
+  { href: "/admin/access", label: "Akses Dashboard", icon: ShieldCheck },
+  { href: "/admin/finance", label: "Keuangan", icon: WalletCards, children: [{ href: "/admin/finance", label: "Produk Terjual" }, { href: "/admin/finance/recap", label: "Rekap Keuangan" }, { href: "/admin/finance/consignors", label: "Data Penitip" }] },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -32,6 +36,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [authorized, setAuthorized] = useState(
     process.env.NEXT_PUBLIC_ADMIN_AUTH_ENABLED === "false",
   );
+  const [isAdmin, setIsAdmin] = useState(process.env.NEXT_PUBLIC_ADMIN_AUTH_ENABLED === "false");
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     if (pathname === "/admin/login") return;
@@ -42,10 +48,19 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     }
     const client = createSupabaseBrowserClient();
     client.auth.getUser().then(({ data }) => {
-      if (data.user) setAuthorized(true);
-      else window.location.replace("/admin/login");
+      if (data.user) {
+        setAuthorized(true);
+        setIsAdmin(data.user.app_metadata?.role === "admin" || data.user.app_metadata?.role === "superadmin" || data.user.email?.toLowerCase() === "alkapreloved1323@gmail.com");
+      } else window.location.replace("/admin/login");
     }).catch(() => window.location.replace("/admin/login"));
   }, [pathname]);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    const client = createSupabaseBrowserClient();
+    await client.auth.signOut();
+    window.location.replace("/admin/login");
+  }
 
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -84,7 +99,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
         <nav className="admin-sidebar-nav">
           <p className="admin-sidebar-label">Menu</p>
-          {navItems.map((item) => (
+          {navItems.filter((item) => item.href !== "/admin/access" || isAdmin).map((item) => (
             <div key={item.href} className="admin-sidebar-group">
               <Link
                 href={item.href}
@@ -119,8 +134,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <Menu size={20} />
           </button>
           <div className="admin-topbar-right">
-            <span className="admin-topbar-badge">Demo Mode</span>
+            <span className="admin-topbar-badge">Admin Mode</span>
             <div className="admin-topbar-avatar">A</div>
+            <button className="admin-logout-button" onClick={() => void handleLogout()} disabled={loggingOut}>{loggingOut ? "Keluar..." : "Logout"}</button>
           </div>
         </header>
         <main className="admin-content">{children}</main>

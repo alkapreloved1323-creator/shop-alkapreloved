@@ -9,13 +9,14 @@ export async function POST() {
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
   if (!cloudName || !apiKey || !apiSecret) {
-    return NextResponse.json({ error: "Cloudinary belum dikonfigurasi." }, { status: 503 });
+    return NextResponse.json({ error: "Cloudinary belum dikonfigurasi. Periksa CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, dan CLOUDINARY_API_SECRET." }, { status: 503 });
   }
 
   const timestamp = Math.floor(Date.now() / 1000);
+  const folder = "alkapreloved/products";
   const signature = createHash("sha1")
-    .update(`timestamp=${timestamp}${apiSecret}`)
+    .update(`folder=${folder}&timestamp=${timestamp}${apiSecret}`)
     .digest("hex");
 
-  return NextResponse.json({ cloudName, apiKey, timestamp, signature });
+  return NextResponse.json({ cloudName, apiKey, timestamp, signature, folder });
 }

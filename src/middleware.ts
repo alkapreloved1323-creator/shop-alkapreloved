@@ -69,6 +69,11 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
       return NextResponse.redirect(loginUrl);
     }
+
+    const role = user.app_metadata?.role;
+    if (role !== "admin" && role !== "staff" && role !== "superadmin" && user.email?.toLowerCase() !== "alkapreloved1323@gmail.com") {
+      return NextResponse.redirect(new URL("/admin/login?error=not-authorized", request.url));
+    }
   }
 
   // ─── Prevent authenticated admins from seeing login page ─

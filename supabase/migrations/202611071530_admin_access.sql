@@ -1,0 +1,5 @@
+-- Admin dashboard access is managed through Supabase Auth app_metadata.role.
+-- Supported roles: admin (manage access) and staff (use the dashboard).
+-- The API route uses the service role only after verifying the current admin session.
+-- No public table is needed: roles live in auth.users.raw_app_meta_data.
+-- Apply this migration in the Supabase SQL Editor or with `supabase db push`.
