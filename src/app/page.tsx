@@ -2,26 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { ArrowRight, Star, Search, ChevronDown, Package, Sparkles, Shirt, Watch, Footprints } from "lucide-react";
 import { KauppaNavbar, KauppaFooter, KauppaProductCard, type Product } from "@/components/storefront";
-
-const featuredProducts: Product[] = [
-  { name: "Linen Oversized Shirt", slug: "linen-oversized-shirt", category: "Tops", price: "Rp 185.000", condition: "Very good", size: "M", image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=600&q=80", badge: "Just in", rating: 4.5, reviews: 231 },
-  { name: "Everyday Leather Tote", slug: "everyday-leather-tote", category: "Accessories", price: "Rp 320.000", condition: "Good", size: "One size", image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80", rating: 4.2, reviews: 104 },
-  { name: "Soft Tailored Trousers", slug: "soft-tailored-trousers", category: "Bottoms", price: "Rp 240.000", condition: "Like new", size: "S", image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=600&q=80", rating: 4.8, reviews: 502 },
-  { name: "Vintage Denim Jacket", slug: "vintage-denim-jacket", category: "Outerwear", price: "Rp 410.000", condition: "Good", size: "L", image: "https://images.unsplash.com/photo-1551537482-f2075a1d41f2?auto=format&fit=crop&w=600&q=80", rating: 4.6, reviews: 88 },
-  { name: "Silk Midi Dress", slug: "silk-midi-dress", category: "Dresses", price: "Rp 290.000", condition: "Like new", size: "M", image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80", rating: 4.3, reviews: 175, badge: "Popular" },
-  { name: "Classic Canvas Sneakers", slug: "classic-canvas-sneakers", category: "Footwear", price: "Rp 195.000", condition: "Very good", size: "39", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80", rating: 4.7, reviews: 344 },
-];
-
-const mayLikeProducts: Product[] = [
-  { name: "Knit Cardigan Cream", slug: "knit-cardigan-cream", category: "Tops", price: "Rp 220.000", condition: "Good", size: "M", image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=600&q=80", rating: 4.4, reviews: 94 },
-  { name: "Pleated Midi Skirt", slug: "pleated-midi-skirt", category: "Bottoms", price: "Rp 165.000", condition: "Very good", size: "S", image: "https://images.unsplash.com/photo-1583496661160-fb5974b21fa0?auto=format&fit=crop&w=600&q=80", rating: 4.1, reviews: 76 },
-  { name: "Woven Shoulder Bag", slug: "woven-shoulder-bag", category: "Accessories", price: "Rp 275.000", condition: "Like new", size: "OS", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80", rating: 4.6, reviews: 132 },
-  { name: "High-Waist Mom Jeans", slug: "high-waist-mom-jeans", category: "Bottoms", price: "Rp 310.000", condition: "Good", size: "28", image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=600&q=80", rating: 4.5, reviews: 207 },
-  { name: "Floral Wrap Blouse", slug: "floral-wrap-blouse", category: "Tops", price: "Rp 145.000", condition: "Very good", size: "M", image: "https://images.unsplash.com/photo-1495385794356-15371f348c31?auto=format&fit=crop&w=600&q=80", rating: 4.2, reviews: 58 },
-  { name: "Leather Belt Classic", slug: "leather-belt-classic", category: "Accessories", price: "Rp 110.000", condition: "Good", size: "OS", image: "https://images.unsplash.com/photo-1624222247344-550fb60583dc?auto=format&fit=crop&w=600&q=80", rating: 4.3, reviews: 88 },
-];
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const iconCategories = [
   { label: "Fashion", icon: <Shirt size={28} strokeWidth={1.5} />, color: "#FFEDD5" },
@@ -38,6 +22,36 @@ const services = [
 ];
 
 export default function HomePage() {
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
+
+  const mediaPreview = (url: string) => {
+    if (!/\.(mp4|webm|mov)(?:\?|$)/i.test(url)) return url;
+    return url.replace("/video/upload/", "/video/upload/so_0/").replace(/\.(mp4|webm|mov)(?:\?.*)?$/i, ".jpg");
+  };
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const supabase = createSupabaseBrowserClient();
+      const { data } = await supabase.from("products").select("id,name,slug,price,condition,category:categories(name),product_images(public_url,sort_order)").eq("status", "active").gt("stock", 0).order("created_at", { ascending: false }).limit(20);
+      if (!data) return;
+      const products = data.map((product) => {
+        const category = Array.isArray(product.category) ? product.category[0] : product.category;
+        const firstMedia = Array.isArray(product.product_images) ? [...product.product_images].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0] : undefined;
+        const image = firstMedia?.public_url;
+        return { name: product.name, slug: product.slug, category: (category as { name?: string } | null)?.name ?? "Fashion", price: `Rp ${Number(product.price).toLocaleString("id-ID")}`, priceValue: Number(product.price), condition: product.condition.replace("_", " "), size: "-", image: image ? mediaPreview(image) : "/crop-products.png" };
+      });
+      setNewProducts(products.slice(0, 6));
+      const daySeed = Math.floor(Date.now() / 86400000);
+      const shuffled = [...products].sort((a, b) => {
+        const score = (value: string) => { let hash = daySeed; for (const char of value) hash = (hash * 31 + char.charCodeAt(0)) | 0; return Math.abs(hash); };
+        return score(a.slug) - score(b.slug);
+      });
+      setRecommendedProducts(shuffled.slice(0, 6));
+    };
+    loadProducts().catch(() => undefined);
+  }, []);
+
   return (
     <div className="kauppa-page">
       <KauppaNavbar />
@@ -94,14 +108,7 @@ export default function HomePage() {
             <h2 className="kauppa-section-title">Newly Arrived</h2>
             <Link href="/shop" className="kauppa-view-all-btn">View All <ArrowRight size={14} /></Link>
           </div>
-          <div className="kauppa-product-grid">
-            {featuredProducts.map((p) => (
-              <KauppaProductCard key={p.slug} product={p} />
-            ))}
-          </div>
-          <div className="kauppa-center-cta">
-            <Link href="/shop" className="kauppa-cta-orange">Check more Fashion</Link>
-          </div>
+          {newProducts.length ? <div className="kauppa-product-grid">{newProducts.map((product) => <KauppaProductCard key={product.slug} product={product} />)}</div> : <div className="kauppa-empty-products">Belum ada produk yang tersedia.</div>}
         </div>
       </section>
 
@@ -112,11 +119,7 @@ export default function HomePage() {
             <h2 className="kauppa-section-title">Products you may like</h2>
             <Link href="/shop" className="kauppa-view-all-btn dark">View All <ArrowRight size={14} /></Link>
           </div>
-          <div className="kauppa-product-grid-6">
-            {mayLikeProducts.map((p) => (
-              <KauppaProductCard key={p.slug} product={p} compact />
-            ))}
-          </div>
+          {recommendedProducts.length ? <div className="kauppa-product-grid-6">{recommendedProducts.map((product) => <KauppaProductCard key={product.slug} product={product} compact />)}</div> : <div className="kauppa-empty-products">Belum ada rekomendasi produk.</div>}
         </div>
       </section>
 
