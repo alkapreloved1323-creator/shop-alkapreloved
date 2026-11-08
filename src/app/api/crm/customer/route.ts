@@ -23,11 +23,20 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = createSupabaseAdminClient();
     const customer = parsed.data;
-    const { error } = await supabase.from("customers").upsert({
+    const phone = customer.phone?.trim();
+    if (!phone) return NextResponse.json({ error: "Nomor WhatsApp customer wajib diisi." }, { status: 400 });
+    const values = {
       ...customer,
+      phone,
       consented_at: customer.marketing_consent ? new Date().toISOString() : null,
-    }, { onConflict: "phone" });
-    if (error) throw error;
+      updated_at: new Date().toISOString(),
+    };
+    const existing = await supabase.from("customers").select("id").eq("phone", phone).maybeSingle();
+    if (existing.error) throw existing.error;
+    const result = existing.data
+      ? await supabase.from("customers").update(values).eq("id", existing.data.id)
+      : await supabase.from("customers").insert(values);
+    if (result.error) throw result.error;
     return NextResponse.json({ ok: true });
   } catch {
     // CRM capture must not prevent a customer from completing checkout.
