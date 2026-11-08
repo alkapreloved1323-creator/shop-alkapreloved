@@ -33,13 +33,13 @@ export default function HomePage() {
   useEffect(() => {
     const loadProducts = async () => {
       const supabase = createSupabaseBrowserClient();
-      const { data } = await supabase.from("products").select("id,name,slug,price,condition,category:categories(name),product_images(public_url,sort_order)").eq("status", "active").gt("stock", 0).order("created_at", { ascending: false }).limit(20);
+      const { data } = await supabase.from("products").select("id,name,slug,price,condition,stock,category:categories(name),product_images(public_url,sort_order)").eq("status", "active").order("created_at", { ascending: false }).limit(20);
       if (!data) return;
       const products = data.map((product) => {
         const category = Array.isArray(product.category) ? product.category[0] : product.category;
         const firstMedia = Array.isArray(product.product_images) ? [...product.product_images].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0] : undefined;
         const image = firstMedia?.public_url;
-        return { name: product.name, slug: product.slug, category: (category as { name?: string } | null)?.name ?? "Fashion", price: `Rp ${Number(product.price).toLocaleString("id-ID")}`, priceValue: Number(product.price), condition: product.condition.replace("_", " "), size: "-", image: image ? mediaPreview(image) : "/crop-products.png" };
+        return { name: product.name, slug: product.slug, category: (category as { name?: string } | null)?.name ?? "Fashion", price: `Rp ${Number(product.price).toLocaleString("id-ID")}`, priceValue: Number(product.price), condition: product.condition.replace("_", " "), size: "-", image: image ? mediaPreview(image) : "/crop-products.png", stock: Number(product.stock) };
       });
       setNewProducts(products.slice(0, 6));
       const daySeed = Math.floor(Date.now() / 86400000);

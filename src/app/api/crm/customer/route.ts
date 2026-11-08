@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
-const sourceValues = ["direct", "instagram", "facebook", "google", "tiktok", "referral", "whatsapp", "marketplace", "other"] as const;
+const sourceValues = ["direct", "instagram", "facebook", "google", "tiktok", "referral", "whatsapp", "marketplace", "carousell", "other"] as const;
 const schema = z.object({
   full_name: z.string().min(2).max(120),
   phone: z.string().max(30).optional(),

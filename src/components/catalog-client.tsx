@@ -24,11 +24,11 @@ function CatalogCard({ product, onAdd }: { product: Product; onAdd: (product: Pr
         <Link href={`/product/${product.slug}`} className="catalog-reference-image-link">
           <Image src={product.image} alt={product.name} fill sizes="(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 25vw" />
         </Link>
-        {product.badge && <span className="catalog-reference-tag">{product.badge}</span>}
+        {((product.stock !== undefined && product.stock <= 0) || product.badge) && <span className={`catalog-reference-tag${product.stock !== undefined && product.stock <= 0 ? " is-sold-out" : ""}`}>{product.stock !== undefined && product.stock <= 0 ? "Sold out" : product.badge}</span>}
         <button className={`catalog-reference-wishlist ${liked ? "is-liked" : ""}`} onClick={() => toggleItem(product)} aria-label={`${liked ? "Remove" : "Add"} ${product.name} ${liked ? "from" : "to"} wishlist`}>
           <Heart size={16} fill={liked ? "currentColor" : "none"} />
         </button>
-        <button className="catalog-reference-add" onClick={() => onAdd(product)} aria-label={`Add ${product.name} to cart`}><Plus size={19} /></button>
+        <button className="catalog-reference-add" onClick={() => onAdd(product)} disabled={product.stock !== undefined && product.stock <= 0} aria-label={product.stock !== undefined && product.stock <= 0 ? `${product.name} sold out` : `Add ${product.name} to cart`}><Plus size={19} /></button>
       </div>
       <div className="catalog-reference-info">
         <Link href={`/product/${product.slug}`} className="catalog-reference-name">{product.name}</Link>
@@ -66,7 +66,8 @@ export function CatalogClient({ products }: { products: Product[] }) {
   const selectCategory = (value: string) => { setCategory(value); setPage(1); };
   const clearFilters = () => { setCategory("All Products"); setPriceRange("all"); setQuery(""); setSort("featured"); setPage(1); };
   const addToCart = (product: Product) => {
-    addItem({ slug: product.slug, name: product.name, price: product.price, priceValue: product.priceValue ?? 0, image: product.image, size: product.size, stock: 10 });
+    if (product.stock !== undefined && product.stock <= 0) return;
+    addItem({ slug: product.slug, name: product.name, price: product.price, priceValue: product.priceValue ?? 0, image: product.image, size: product.size, stock: product.stock ?? 10 });
     setNotice(`${product.name} ditambahkan ke keranjang`);
     window.setTimeout(() => setNotice(""), 2400);
   };

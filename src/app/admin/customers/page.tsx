@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { loadCustomerProfiles } from "@/lib/crm/customers";
 import { useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 
@@ -13,7 +13,7 @@ export default function AdminCustomersPage() {
   const searchParams = useSearchParams();
   const [customers, setCustomers] = useState<Customer[]>(seed);
   useEffect(() => {
-    createSupabaseBrowserClient().from("customers").select("id,full_name,phone,source,total_orders,total_spent,marketing_consent").order("created_at", { ascending: false }).then(({ data }) => setCustomers((data ?? []).map((customer) => ({ id: customer.id, name: customer.full_name, phone: customer.phone ?? "-", source: customer.source, segment: Number(customer.total_orders) >= 5 ? "VIP" : Number(customer.total_orders) > 1 ? "Active" : "New", orders: Number(customer.total_orders), spent: Number(customer.total_spent), consent: customer.marketing_consent }))));
+    loadCustomerProfiles().then((data) => setCustomers(data.map((customer) => ({ ...customer, segment: customer.orders >= 5 ? "VIP" : customer.orders > 1 ? "Active" : "New" }))));
   }, []);
   const [query, setQuery] = useState("");
   const [segment, setSegment] = useState(() => searchParams.get("segment") ?? "All segments");

@@ -173,6 +173,8 @@
 .catalog-reference-image-link img { object-fit:cover; transition:transform .5s; }
 .catalog-reference-product:hover .catalog-reference-image-link img { transform:scale(1.04); }
 .catalog-reference-tag { position:absolute; top:12px; left:12px; border-radius:999px; background:rgba(255,255,255,.95); padding:5px 9px; color:var(--color-ink); font-size:9px; font-weight:700; box-shadow:0 2px 8px rgba(15,23,42,.08); }
+.catalog-reference-tag.is-sold-out { background:#B42318; color:#FFF1F0; }
+.catalog-reference-add:disabled { background:#94A3B8; color:#F8FAFC; cursor:not-allowed; opacity:.9; }
 .catalog-reference-wishlist, .catalog-reference-add { position:absolute; display:grid; place-items:center; border:0; cursor:pointer; box-shadow:0 2px 8px rgba(15,23,42,.1); }
 .catalog-reference-wishlist { top:12px; right:12px; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,.95); color:var(--color-ink); }
 .catalog-reference-wishlist.is-liked { color:var(--sg-error); }
@@ -402,6 +404,7 @@
 .kauppa-card-img { object-fit: cover; transition: transform .4s; }
 .kauppa-product-card:hover .kauppa-card-img { transform: scale(1.04); }
 .kauppa-card-badge { position: absolute; top: 8px; left: 8px; background: var(--sg-accent); color: white; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; padding: 3px 8px; border-radius: 20px; pointer-events: none; }
+.kauppa-card-badge.is-sold-out { background:#B42318; color:#FFF1F0; }
 .kauppa-card-heart { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 50%; background: #F8FAFC; border: 1px solid #E2E8F0; display: grid; place-items: center; cursor: pointer; color: #94A3B8; transition: color .18s, border-color .18s; }
 .kauppa-card-heart:hover, .kauppa-card-heart.liked { color: var(--sg-error); border-color: var(--sg-error); }
 .kauppa-card-info { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }

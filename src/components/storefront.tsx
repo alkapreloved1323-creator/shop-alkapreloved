@@ -716,6 +716,7 @@ export type Product = {
   createdAt?: string;
   rating?: number;
   reviews?: number;
+  stock?: number;
 };
 
 // ────────────────────────────────────────────────────────────────────
@@ -832,6 +833,7 @@ export function KauppaProductCard({ product, compact = false }: { product: Produ
   const { isSaved, toggleItem } = useWishlist();
   const { addItem } = useCart();
   const liked = isSaved(product.slug);
+  const soldOut = product.stock !== undefined && product.stock <= 0;
 
   return (
     <article className={`kauppa-product-card${compact ? " kauppa-card-compact" : ""}`}>
@@ -839,7 +841,7 @@ export function KauppaProductCard({ product, compact = false }: { product: Produ
         <Link href={`/product/${product.slug}`}>
           <Image src={product.image} alt={product.name} fill sizes="(max-width:640px) 50vw,300px" className="kauppa-card-img" />
         </Link>
-        {product.badge && <span className="kauppa-card-badge">{product.badge}</span>}
+        {(product.badge || soldOut) && <span className={`kauppa-card-badge${soldOut ? " is-sold-out" : ""}`}>{soldOut ? "Sold out" : product.badge}</span>}
         <button
           className={`kauppa-card-heart${liked ? " liked" : ""}`}
           aria-label={`${liked ? "Remove" : "Add"} ${product.name} to wishlist`}
@@ -865,8 +867,9 @@ export function KauppaProductCard({ product, compact = false }: { product: Produ
           <span className="kauppa-card-price">{product.price}</span>
           <button
             className="kauppa-card-add"
-            aria-label={`Add ${product.name} to cart`}
-            onClick={() => addItem({ ...product, priceValue: product.priceValue ?? 0, stock: 10 }, 1)}
+            aria-label={soldOut ? `${product.name} sold out` : `Add ${product.name} to cart`}
+            onClick={() => { if (!soldOut) addItem({ ...product, priceValue: product.priceValue ?? 0, stock: product.stock ?? 10 }, 1); }}
+            disabled={soldOut}
           >
             <ShoppingBag size={15} />
           </button>
